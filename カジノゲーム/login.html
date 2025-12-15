@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ログイン</title>
+</head>
+<body>
+<h2>スロット ログイン</h2>
+
+<input id="name" placeholder="プレイヤー名"><br>
+<input id="pass" type="password" placeholder="パスワード"><br><br>
+
+<button onclick="login()">ログイン / 新規登録</button>
+
+<script>
+function login() {
+  const name = nameInput.value.trim();
+  const pass = passInput.value;
+  if (!name || !pass) return alert("未入力");
+
+  const players = JSON.parse(localStorage.getItem("players") || "{}");
+
+  if (players[name]) {
+    if (players[name].password !== pass) return alert("パスワード違い");
+  } else {
+    players[name] = {
+      password: pass,
+      coin: 100,
+      setting: 3,
+      kakuhen: false
+    };
+  }
+
+  localStorage.setItem("players", JSON.stringify(players));
+  localStorage.setItem("currentPlayer", name);
+  location.href = "game.html";
+}
+
+const nameInput = document.getElementById("name");
+const passInput = document.getElementById("pass");
+</script>
+</body>
+</html>

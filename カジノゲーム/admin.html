@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>管理者</title>
+</head>
+<body>
+
+<h2>管理者パネル</h2>
+
+<input id="adminPass" type="password" placeholder="管理者パス">
+<button onclick="loginAdmin()">ログイン</button>
+
+<div id="panel" style="display:none;">
+  <select id="playerList"></select><br><br>
+
+  所持金<br>
+  <input id="coin" type="number"><br><br>
+
+  設定 (1〜6)<br>
+  <input id="setting" type="number" min="1" max="6"><br><br>
+
+  <label>
+    <input type="checkbox" id="kakuhen"> 確変
+  </label><br><br>
+
+  <button onclick="updatePlayer()">更新</button>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "admin123";
+
+function loginAdmin(){
+  if(adminPass.value !== ADMIN_PASSWORD) return alert("NG");
+  panel.style.display = "block";
+  loadPlayers();
+}
+
+function loadPlayers(){
+  const players = JSON.parse(localStorage.getItem("players") || "{}");
+  playerList.innerHTML = "";
+  for(const name in players){
+    const o = document.createElement("option");
+    o.value = name;
+    o.textContent = name;
+    playerList.appendChild(o);
+  }
+  playerList.onchange = loadPlayer;
+  loadPlayer();
+}
+
+function loadPlayer(){
+  const players = JSON.parse(localStorage.getItem("players"));
+  const p = players[playerList.value];
+  coin.value = p.coin;
+  setting.value = p.setting;
+  kakuhen.checked = p.kakuhen;
+}
+
+function updatePlayer(){
+  const players = JSON.parse(localStorage.getItem("players"));
+  const p = players[playerList.value];
+  p.coin = Number(coin.value);
+  p.setting = Number(setting.value);
+  p.kakuhen = kakuhen.checked;
+  localStorage.setItem("players", JSON.stringify(players));
+  alert("更新しました");
+}
+
+const adminPass = document.getElementById("adminPass");
+const panel = document.getElementById("panel");
+const playerList = document.getElementById("playerList");
+const coin = document.getElementById("coin");
+const setting = document.getElementById("setting");
+const kakuhen = document.getElementById("kakuhen");
+</script>
+</body>
+</html>
